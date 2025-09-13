@@ -5,6 +5,7 @@ import com.example.simulado_pw.repository.OperacaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -22,5 +23,9 @@ public class OperacaoService {
                 .orElseThrow(() -> new NoSuchElementException("Não encontrado"));
         operacaoSalva.setDescricao(operacao.getDescricao());
         return repository.save(operacaoSalva);
+    }
+
+    public List<Operacao> listarTodas(){
+        return repository.findAll();
     }
 }

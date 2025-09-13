@@ -6,6 +6,8 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/operacao")
 public class OperacaoController {
@@ -20,5 +22,9 @@ public class OperacaoController {
     @PutMapping
     public Operacao alterarDescricao(@RequestBody Operacao operacao) {
         return service.alterar(operacao);
+    }
+    @GetMapping
+    public List<Operacao> buscarTodas(){
+        return service.listarTodas();
     }
 }
