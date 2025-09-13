@@ -1,0 +1,24 @@
+package com.example.simulado_pw.controller;
+
+import com.example.simulado_pw.model.Operacao;
+import com.example.simulado_pw.service.OperacaoService;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/operacao")
+public class OperacaoController {
+    @Autowired
+    private OperacaoService service;
+
+    @PostMapping
+    public Operacao criar(@Valid @RequestBody Operacao operacao) {
+        return service.salvar(operacao);
+    }
+
+    @PutMapping
+    public Operacao alterarDescricao(@RequestBody Operacao operacao) {
+        return service.alterar(operacao);
+    }
+}
