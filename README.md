@@ -56,4 +56,3 @@ Altere o usuário, senha ou nome do banco conforme o seu ambiente.
 Este projeto faz parte de um **simulado** e não corresponde a uma aplicação final de produção.
 Antes da entrega, é obrigatório apresentar o sistema funcionando ao professor para validação.
 
-```
