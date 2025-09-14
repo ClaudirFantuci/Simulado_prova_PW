@@ -1,5 +1,7 @@
 package com.example.simulado_pw.service;
 
+import com.example.simulado_pw.config.ConfiguracaoCluster;
+import com.example.simulado_pw.enums.TipoOpercacao;
 import com.example.simulado_pw.model.Operacao;
 import com.example.simulado_pw.repository.OperacaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +17,11 @@ public class OperacaoService {
     private OperacaoRepository repository;
 
     public Operacao salvar(Operacao operacao) {
-        return repository.save(operacao);
+        if (validarOperacao(operacao)) {
+            return repository.save(operacao);
+        } else {
+            throw new IllegalArgumentException("Operação inválida: viola limites do cluster ou contém dados incorretos");
+        }
     }
 
     public Operacao alterar(Operacao operacao) {
@@ -27,5 +33,33 @@ public class OperacaoService {
 
     public List<Operacao> listarTodas(){
         return repository.findAll();
+    }
+
+    public boolean validarOperacao(Operacao operacao) {
+        List<Operacao> totalAlocacao = repository.findByTipo(TipoOpercacao.ALOCACAO);
+        List<Operacao> totalLiberacao = repository.findByTipo(TipoOpercacao.LIBERACAO);
+        double memAlocada = 0;
+        int quantCpuAlocada = 0;
+        double memLiberada = 0;
+        int quantCpuLiberada = 0;
+        for (Operacao op : totalAlocacao) {
+            memAlocada += op.getMem();
+            quantCpuAlocada += op.getQuantCpu();
+        }
+        for (Operacao op : totalLiberacao) {
+            memLiberada += op.getMem();
+            quantCpuLiberada += op.getQuantCpu();
+        }
+        int cpuLivre = ConfiguracaoCluster.CPU_MAX - (quantCpuAlocada - quantCpuLiberada);
+        double memLivre = ConfiguracaoCluster.MEM_MAX - (memAlocada - memLiberada);
+
+        if (operacao.getTipo() == TipoOpercacao.ALOCACAO) {
+            return cpuLivre >= operacao.getQuantCpu() && memLivre >= operacao.getMem();
+        } else if (operacao.getTipo() == TipoOpercacao.LIBERACAO) {
+            return (quantCpuAlocada - quantCpuLiberada - operacao.getQuantCpu() >= 0) &&
+                    (memAlocada - memLiberada - operacao.getMem() >= 0);
+        }
+
+        return false;
     }
 }
