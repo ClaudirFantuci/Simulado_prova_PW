@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/operacao")
@@ -24,9 +23,19 @@ public class OperacaoController {
     public Operacao alterarDescricao(@RequestBody Operacao operacao) {
         return service.alterar(operacao);
     }
+    @PutMapping("/estorno")
+    public Operacao estorno(@RequestBody Operacao operacao) {
+        return service.estorno(operacao);
+    }
     @GetMapping
     public List<Operacao> buscarTodas(){
         return service.listarTodas();
+    }
+
+    @DeleteMapping("/{id}")
+    public void excluir(@PathVariable Long id) {
+        service.excluir(id);
+
     }
 
 }
